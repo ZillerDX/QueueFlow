@@ -1,0 +1,139 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bg-canvas: #f8fafc;
+    --bg-surface: #ffffff;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --primary-accent: #2563eb;
+    --primary-hover: #1d4ed8;
+  }
+
+  :root.dark,
+  html.dark,
+  body.dark,
+  .dark {
+    --bg-canvas: #090d16;
+    --bg-surface: #0f172a;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.15);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --primary-accent: #3b82f6;
+    --primary-hover: #2563eb;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+}
+
+/* Tabular Mono for High-Precision Ticket Digits */
+.font-ticket {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+/* Micro 4-State Spring Motion */
+.btn-motion {
+  transition: all 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.btn-motion:hover {
+  transform: translateY(-1px);
+}
+.btn-motion:active {
+  transform: translateY(0.5px) scale(0.98);
+}
+
+/* ==========================================================================
+   PRINT MEDIA STYLES - Professional Signage & Desk Stand Output
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Completely hide web controls, navigation, and background elements */
+  nav,
+  app-tv-config-modal,
+  .no-print,
+  button,
+  .btn-motion,
+  .admin-page-content {
+    display: none !important;
+  }
+
+  /* Reset modal overlay containers so they do not block or offset the printout */
+  .print-dialog-backdrop {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .print-dialog-card {
+    position: static !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ensure the printable signage fills the page proportionally */
+  .printable-sign-sheet {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 160mm !important;
+    margin: 10mm auto !important;
+    padding: 10mm !important;
+    border: 2px solid #1e293b !important;
+    border-radius: 20px !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .printable-sign-sheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+

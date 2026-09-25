@@ -1,0 +1,48 @@
+services:
+  queueflow-db:
+    image: postgres:18-alpine
+    container_name: queueflow-db
+    environment:
+      POSTGRES_DB: queueflow_db
+      POSTGRES_USER: queueflow_user
+      POSTGRES_PASSWORD: SecretPassword123!
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  queueflow-redis:
+    image: redis:alpine
+    container_name: queueflow-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  queueflow-api:
+    build:
+      context: ./backend
+      dockerfile: QueueFlow.Api/Dockerfile
+    container_name: queueflow-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=queueflow-db;Port=5432;Database=queueflow_db;Username=queueflow_user;Password=SecretPassword123!
+      - ConnectionStrings__Redis=queueflow-redis:6379
+    ports:
+      - "5080:8080"
+    depends_on:
+      - queueflow-db
+      - queueflow-redis
+
+  queueflow-web:
+    build:
+      context: ./queueflow-web
+      dockerfile: Dockerfile
+    container_name: queueflow-web
+    ports:
+      - "80:80"
+    depends_on:
+      - queueflow-api
+
+volumes:
+  pgdata:
