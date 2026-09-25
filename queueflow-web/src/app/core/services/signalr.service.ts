@@ -8,10 +8,44 @@ import { ApiConfigService } from './api-config.service';
 export class SignalRService {
   private api = inject(ApiConfigService);
   private hubConnection: signalR.HubConnection | null = null;
+  private broadcastChannel: BroadcastChannel | null = null;
   public isConnected = signal<boolean>(false);
   public lastEvent = signal<any>(null);
 
+  constructor() {
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      this.broadcastChannel = new BroadcastChannel('queueflow_channel');
+      this.broadcastChannel.onmessage = (event) => {
+        if (event.data) {
+          this.lastEvent.set({
+            ...event.data,
+            timestamp: new Date()
+          });
+        }
+      };
+    }
+  }
+
+  public broadcastEvent(event: any) {
+    const payload = {
+      ...event,
+      timestamp: new Date()
+    };
+    if (this.broadcastChannel) {
+      try {
+        this.broadcastChannel.postMessage(payload);
+      } catch {}
+    }
+    this.lastEvent.set(payload);
+  }
+
   public startConnection(hubUrl?: string): Promise<void> {
+    if (!this.api.baseUrl) {
+      // In standalone Demo mode (no remote backend configured), rely on BroadcastChannel
+      this.isConnected.set(true);
+      return Promise.resolve();
+    }
+
     const targetUrl = hubUrl || this.api.hubUrl;
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       return Promise.resolve();

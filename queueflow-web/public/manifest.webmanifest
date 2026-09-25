@@ -1,0 +1,24 @@
+{
+  "name": "QueueFlow — Real-Time Queue Management",
+  "short_name": "QueueFlow",
+  "description": "Smart, real-time distributed queue management system with digital ticket tracking, staff desk terminal, and live display.",
+  "theme_color": "#2563eb",
+  "background_color": "#f8fafc",
+  "display": "standalone",
+  "orientation": "any",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
