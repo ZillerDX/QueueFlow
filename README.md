@@ -1,182 +1,260 @@
-# QueueFlow — Real-Time Distributed Queue Management System
+<div align="center">
 
-QueueFlow is an enterprise-grade, real-time multi-tenant Queue Management System engineered to streamline physical service operations, eliminate counter crowd congestion, and deliver sub-millisecond status updates to customers and branch managers.
+# QueueFlow
 
----
+### Enterprise Real-Time Distributed Queue Management System
+**ระบบบริหารจัดการคิวและเคาน์เตอร์บริการแบบเรียลไทม์ระดับองค์กร**
 
-## 1. Product Overview (The 7 Pillars)
+[![Live Demo on Vercel](https://img.shields.io/badge/Live_Demo-queueflow--wheat.vercel.app-2563eb?style=for-the-badge&logo=vercel&logoColor=white)](https://queueflow-wheat.vercel.app)
+[![Angular 19](https://img.shields.io/badge/Angular-19.2-dd0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.dev)
+[![.NET 10 LTS](https://img.shields.io/badge/.NET-10.0_LTS-512bd4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com)
+[![PWA Ready](https://img.shields.io/badge/PWA-Installable-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-CSS_v4-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
 
-### Who (Target Audience & Stakeholders)
-- **Customers**: Visitors seeking services at clinics, banking halls, dining establishments, repair shops, and public agency centers without waiting in physical queues.
-- **Service Desk Staff**: Front-desk operators and tellers who call, recall, serve, transfer, or skip tickets in rapid sequence.
-- **Branch Managers**: Supervisors monitoring counter utilization, throughput, bottleneck alerts, and rolling average wait time metrics.
-- **System Administrators**: Multi-tenant platform operators provisioning organizations and auditing global activity logs.
+<br />
 
-### Problem
-1. **Physical Congestion & Frustration**: Customers are pinned to waiting rooms without visibility into remaining wait times or position.
-2. **Double-Call Collisions (Race Conditions)**: In high-volume branches, multiple tellers pressing "Call Next" simultaneously risk duplicate ticket assignments.
-3. **Manual Paperwork & Stale Insights**: Supervisors lack live telemetric visibility into peak hours, bottlenecks, or SLA breaches.
+**[English Documentation](#english) • [เอกสารภาษาไทย](#ภาษาไทย)**
 
-### Solution
-- **Zero-Friction Mobile Intake**: Customers scan a branch QR code, choose their service, and receive a cryptographically tokenized digital pass.
-- **Pessimistic Concurrency Engine**: PostgreSQL `FOR UPDATE SKIP LOCKED` guarantees zero duplicate queue allocations across simultaneous counter requests.
-- **Bi-Directional Real-Time Push**: SignalR WebSocket channels broadcast ticket transitions and audio announcements with zero page refreshes.
+<br />
 
----
+[![QueueFlow Customer Mobile Intake Preview](docs/preview.png)](https://queueflow-wheat.vercel.app)
 
-## 2. Core Features
-
-| Feature Area | Capabilities |
-| :--- | :--- |
-| **Customer Journey** | Zero-auth scan-and-join, dynamic queue position countdown, rolling-average Estimated Waiting Time (EWT), self-cancellation |
-| **Desk Terminal** | Single-click Call Next, Recall (chime broadcast), Start Service, Complete, Skip, No-Show, Cross-Service Transfer |
-| **Concurrency Guard** | Transaction-isolated row locks ensuring simultaneous counter calls grab distinct tickets with sub-millisecond latency |
-| **Manager Analytics** | Daily throughput, active teller monitors, cancellation rates, no-show ratios, and SLA tracking |
-| **Security & Privacy** | Base64URL URL-safe ticket tokens (zero IDOR exposure), tenant-isolated schemas, immutable audit event streams |
+</div>
 
 ---
 
-## 3. Technology Stack
+<a name="english"></a>
+## English Documentation
 
-- **Backend**: C# 14, **.NET 10 LTS (`net10.0`)**, ASP.NET Core Minimal APIs, Entity Framework Core 10, ASP.NET Core SignalR
-- **Database**: PostgreSQL 18 (Production) / SQLite (Rapid Zero-Config Local Dev)
-- **Cache & Real-Time**: Redis 7+ Pub/Sub Backplane
-- **Frontend**: **Angular 19+**, TypeScript, Angular Signals (`signal`, `computed`, `effect`), Standalone Single-File Components, Tailwind CSS v4
-- **Testing**: xUnit, FluentAssertions, `WebApplicationFactory`
+### 1. Product Overview (The 7 Pillars)
+
+#### Who (Target Audience & Personas)
+* **Customers & Visitors**: Patients in medical clinics, banking hall clients, repair center patrons, and government service visitors who need real-time queue visibility without standing in crowded waiting rooms.
+* **Service Counter Staff**: Tellers, customer service representatives, and triage nurses operating dedicated physical or virtual service desks.
+* **Branch Supervisors & Managers**: Floor managers monitoring throughput, active counter states, bottleneck alerts, and average waiting time SLAs.
+* **System Administrators**: Multi-tenant platform operators configuring organizations, managing service categories, and auditing operational logs.
+
+#### Problem
+1. **Waiting Room Congestion**: Customers are physically bound to lobbies without transparency into remaining wait times or current serving positions.
+2. **Double-Call Concurrency Collisions**: In high-velocity service environments, multiple staff members hitting "Call Next" simultaneously risk duplicate ticket assignments.
+3. **Hardware Lock-in & Licensing Costs**: Traditional queue hardware vendors charge recurring per-terminal licensing and necessitate proprietary thermal printers.
+
+#### Solution
+* **Zero-Friction Mobile Web Intake**: Customers scan a service QR code, pick their service category, and receive a cryptographically tokenized digital pass directly on their smartphone.
+* **Pessimistic Concurrency Engine**: PostgreSQL `SELECT ... FOR UPDATE SKIP LOCKED` guarantees absolute mutual exclusion across concurrent counter requests.
+* **Bi-Directional Real-Time Push**: SignalR WebSocket channels update customer positions, staff terminals, and public displays with sub-millisecond latency.
+* **Client-First PWA Architecture**: Operates as a Progressive Web App installable on iOS, Android, tablets, and smart TVs with offline shell support and zero native app downloads.
 
 ---
 
-## 4. System Architecture
+### 2. Live Demo & Portals
+
+The application is deployed on Vercel as a high-performance, standalone Progressive Web App (PWA):
+
+| Interface Portal | Route | Primary Use Case | Live Access |
+|---|---|---|---|
+| **Customer Intake** | `/queue/join` | Mobile intake with service selection and instant token issuance | [Launch Customer Portal](https://queueflow-wheat.vercel.app/queue/join) |
+| **Staff Desk Terminal** | `/staff/dashboard` | Calling next ticket, recall chime, start service, skip, no-show | [Launch Staff Terminal](https://queueflow-wheat.vercel.app/staff/dashboard) |
+| **TV Digital Signage** | `/display` | 16:9 full-screen digital display with audio chime and bilingual speech | [Launch TV Signage](https://queueflow-wheat.vercel.app/display) |
+| **Branch Management** | `/admin/management` | Configure services, counter bindings, and generate printable QR standees | [Launch Admin Console](https://queueflow-wheat.vercel.app/admin/management) |
+
+> [!TIP]
+> **Multi-Window Real-Time Simulation**: Open the [Staff Terminal](https://queueflow-wheat.vercel.app/staff/dashboard) in one window and the [TV Display](https://queueflow-wheat.vercel.app/display) in another window. When you click **"Call Next"** on the staff desk, the TV display instantly rings the service chime and synthesizes the voice announcement in real time via the integrated event bus!
+
+---
+
+### 3. Core Capabilities
+
+* **Intelligent Intake & EWT**: Computes rolling-average Estimated Waiting Time (EWT) dynamically based on historical service duration and active counter capacity.
+* **Cross-Counter Priority Dispatch**: Allows VIP ticket priority elevation, service transfers, and multi-service teller routing.
+* **Acoustic & Voice Synthesis**: Uses Web Audio API for custom chime frequencies and Web Speech API for localized ticket calling in Thai and English.
+* **Printable Standee Generator**: Automatically renders print-ready SVG QR codes for physical counter stands and triage kiosks (A4 and table tent format).
+* **Dual Runtime Engine**: Runs seamlessly as a serverless in-memory PWA on Vercel or connected to a high-scale .NET 10 LTS container backend with PostgreSQL.
+
+---
+
+### 4. Technical Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Clients ["Client Layer"]
-        CustomerApp["Customer Mobile Web (Angular Standalone + Signals)"]
-        StaffApp["Staff Desk Terminal (Angular Standalone + Signals)"]
-        DisplayApp["Digital Signage / Public Display"]
+    subgraph ClientLayer ["Client & PWA Layer (Angular 19 + Signals)"]
+        CustomerPortal["Customer Mobile Web - Zero Auth Intake"]
+        StaffTerminal["Staff Desk Terminal - Counter Calling Operations"]
+        DisplaySignage["Digital Signage - 16:9 Display with Audio Chime"]
+        AdminConsole["Branch Management - Services, Counters, QR Standees"]
     end
 
-    subgraph Gateway ["Application Gateway & Real-Time"]
-        ApiEndpoints["QueueFlow.Api (Minimal APIs - .NET 10 LTS)"]
-        SignalRHub["SignalR Hub (/hubs/queue)"]
+    subgraph TransportLayer ["Application Gateway & Real-Time Transport"]
+        HttpGateway["REST API Endpoints (ASP.NET Core Minimal APIs)"]
+        RealtimeHub["SignalR WebSocket Hub (/hubs/queue)"]
+        EventBus["BroadcastChannel (Client-Side Standalone Sync)"]
     end
 
-    subgraph Core ["Domain & Application Layer"]
-        FSM["Queue State Machine (Waiting -> Called -> Serving -> Completed)"]
-        EWT["Dynamic Rolling Wait Calculator"]
-        LockEngine["Pessimistic Lock Dispatcher (SKIP LOCKED)"]
+    subgraph DomainCore ["Domain Engine (.NET 10 LTS)"]
+        StateMachine["Queue State Machine (Waiting -> Called -> Serving -> Done)"]
+        ConcurrencyLock["Pessimistic Row Lock (SKIP LOCKED Engine)"]
+        EwtCalculator["Dynamic Rolling Wait Calculator"]
     end
 
-    subgraph Storage ["Persistence & Cache"]
-        PostgresDB[("PostgreSQL 18 Database")]
-        RedisCache[("Redis Pub/Sub & Memory Store")]
+    subgraph DataStorage ["Persistence & Cache"]
+        PostgresDB[("PostgreSQL 18 - Transactional Storage")]
+        RedisStore[("Redis 7+ - Realtime Pub/Sub Backplane")]
     end
 
-    CustomerApp <-->|SignalR & REST| ApiEndpoints
-    StaffApp <-->|SignalR & REST| ApiEndpoints
-    DisplayApp <-->|SignalR Streams| SignalRHub
+    CustomerPortal <-->|HTTP / WebSocket| HttpGateway
+    StaffTerminal <-->|HTTP / WebSocket| HttpGateway
+    DisplaySignage <-->|SignalR Stream| RealtimeHub
+    AdminConsole <-->|HTTP REST| HttpGateway
 
-    ApiEndpoints --> Core
-    SignalRHub --> Core
-    Core --> LockEngine
-    Core --> EWT
-    Core --> FSM
-    Core --> PostgresDB
-    Core --> RedisCache
+    CustomerPortal -.->|Cross-Tab Event Stream| EventBus
+    StaffTerminal -.->|Cross-Tab Event Stream| EventBus
+    DisplaySignage -.->|Cross-Tab Event Stream| EventBus
+
+    HttpGateway --> DomainCore
+    RealtimeHub --> DomainCore
+    DomainCore --> ConcurrencyLock
+    DomainCore --> StateMachine
+    DomainCore --> EwtCalculator
+    ConcurrencyLock --> PostgresDB
+    DomainCore --> RedisStore
 ```
 
 ---
 
-## 5. Verification & Engineering Evidence
+### 5. Engineering Craftsmanship & Concurrency Evidence
 
-All automated test suites, state machine validation rules, and high-concurrency race condition simulations pass with **Exit Code 0**:
+#### Double-Call Race Condition Immunity
+When multiple counter operators click "Call Next" in the same millisecond, standard database queries suffer from race conditions resulting in double ticket assignments. QueueFlow resolves this at the database engine level:
+
+```csharp
+// Atomically locks the next waiting ticket, bypassing rows locked by other concurrent transactions
+var ticket = await _dbContext.Tickets
+    .FromSqlRaw(@"
+        SELECT * FROM ""Tickets""
+        WHERE ""BranchId"" = {0} AND ""Status"" = 0
+        ORDER BY ""Priority"" DESC, ""IssuedAt"" ASC
+        LIMIT 1
+        FOR UPDATE SKIP LOCKED", branchId)
+    .FirstOrDefaultAsync(cancellationToken);
+```
+
+#### Verification & Automated Test Suite
+All domain state machine transitions, priority escalation rules, and concurrency locks are covered by automated unit and integration tests passing with **Exit Code 0**:
 
 ```powershell
 dotnet test backend/QueueFlow.Tests/QueueFlow.Tests.csproj --nologo -v q
 # Passed! - Failed: 0, Passed: 7, Skipped: 0, Total: 7, Duration: 1 s
 ```
 
-Angular frontend compiles clean with zero type errors:
+---
+
+### 6. Local Development Quickstart
+
+#### Prerequisites
+* Node.js 22+ & npm
+* .NET 10 LTS SDK
 
 ```powershell
-npx ng build --configuration production
-# Application bundle generation complete. [23.354 seconds]
-# Initial total: 389.45 kB
+# 1. Clone the repository
+git clone https://github.com/ZillerDX/QueueFlow.git
+cd QueueFlow
+
+# 2. Launch Backend (.NET 10 LTS)
+cd backend/QueueFlow.Api
+dotnet run --urls "http://localhost:5080"
+
+# 3. Launch Frontend (Angular 19 Dev Server with HMR)
+cd ../../queueflow-web
+npm install
+npx ng serve --port 4200
 ```
+
+Open [http://localhost:4200](http://localhost:4200) in your browser.
 
 ---
 
-## 6. Getting Started & Local Walkthrough
+<br />
 
-### Option A: Local Dev Execution
+<a name="ภาษาไทย"></a>
+## เอกสารภาษาไทย (Thai Documentation)
 
-1. **Start Backend (.NET 10 LTS)**:
-   ```powershell
-   cd backend/QueueFlow.Api
-   dotnet run --urls "http://localhost:5080"
-   ```
-   *Live Swagger / OpenAPI Endpoint: `http://localhost:5080/openapi/v1.json`*
+### 1. ภาพรวมผลิตภัณฑ์และ 7 เสาหลัก (The 7 Pillars)
 
-2. **Start Frontend (Angular Dev Server with HMR)**:
-   ```powershell
-   cd queueflow-web
-   $env:NG_CLI_ANALYTICS="false"; npx ng serve --port 4200
-   ```
-   *Customer Portal: `http://localhost:4200/queue/join`*  
-   *Staff Terminal: `http://localhost:4200/staff/dashboard`*
+#### ใครคือผู้ใช้งาน (Who)
+* **ผู้รับบริการ / ลูกค้า (Customers)**: ผู้ป่วยในคลินิก, ลูกค้าธนาคาร, ผู้มาซ่อมอุปกรณ์, หรือประชาชนผู้มาติดต่อหน่วยงาน ที่ต้องการความสะดวกในการติดตามคิวผ่านมือถือโดยไม่ต้องยืนเบียดเสียดในห้องรอ
+* **พนักงานประจำเคาน์เตอร์ (Staff Desk)**: เจ้าหน้าที่ประจำจุดบริการที่ต้องเรียกคิว, ขานซ้ำ, เริ่มให้บริการ, ข้ามคิว หรือแจ้งสละสิทธิ์ได้อย่างสะดวกรวดเร็ว
+* **ผู้จัดการสาขา (Branch Supervisors)**: ผู้ดูแลภาพรวมการให้บริการ ตรวจสอบอัตราการไหลของคิว ประสิทธิภาพของแต่ละเคาน์เตอร์ และแจ้งเตือนเมื่อเวลารอเกิน SLA
+* **ผู้ดูแลระบบ (Administrators)**: ผู้กำหนดโครงสร้างสาขา จัดการประเภทบริการ (Service Code) และตั้งค่าโต๊ะบริการ
 
-### Option B: Docker Compose Deployment
+#### ปัญหาที่พบในระบบเดิม (Problem)
+1. **ความแออัดในพื้นที่รอรับบริการ**: ลูกค้าไม่รู้เวลารอที่แน่นอน ทำให้ต้องนั่งเฝ้าหน้าจอทีวีหรือตู้กดคิวตลอดเวลา
+2. **การเรียกคิวซ้ำซ้อน (Race Condition)**: เมื่อเจ้าหน้าที่หลายเคาน์เตอร์กด "เรียกคิวถัดไป" พร้อมกันในเสี้ยววินาที ระบบทั่วไปอาจจ่ายบัตรคิวใบเดียวกันให้สองเคาน์เตอร์พร้อมกัน
+3. **ต้นทุนฮาร์ดแวร์สูง**: ตู้บัตรคิวแบบดั้งเดิมมีค่าไลเซนส์รายปี และต้องพึ่งพาตู้พิมพ์กระดาษความร้อนที่สิ้นเปลือง
 
-Launch the full stack (PostgreSQL 18, Redis, ASP.NET Core 10, Angular):
-
-```powershell
-docker compose up --build
-```
+#### โซลูชันของ QueueFlow (Solution)
+* **สแกนรับคิวผ่านมือถือ (Zero-Friction Intake)**: สแกน QR Code แล้วเลือกบริการผ่านเว็บเบราว์เซอร์ได้ทันที ได้รับบัตรคิวแบบดิจิทัลพร้อมความปลอดภัยระดับโทเคน
+* **ระบบล็อกแถวฐานข้อมูลแบบ Pessimistic Locking**: ใช้คำสั่ง `SELECT ... FOR UPDATE SKIP LOCKED` บน PostgreSQL การันตีไม่มีการเรียกคิวซ้ำซ้อน 100%
+* **การสื่อสารแบบเรียลไทม์สองทาง**: SignalR WebSocket แจ้งเตือนการเปลี่ยนสถานะคิวไปยังมือถือลูกค้าและจอทีวีโดยไม่ต้องรีเฟรชหน้าเว็บ
+* **สถาปัตยกรรม PWA**: ติดตั้งลงบนมือถือ แท็บเล็ต หรือสมาร์ททีวีเป็นแอปพลิเคชันได้ทันทีโดยไม่ต้องผ่าน App Store
 
 ---
 
-## 7. Zero-Cost Production Cloud Deployment Guide
+### 2. ทางเข้าใช้งานระบบทดสอบ (Live Portals)
 
-QueueFlow is architectured to run in production completely within the free tiers of top-tier cloud providers:
+ระบบเปิดให้บริการทดสอบแบบ Standalone Progressive Web App (PWA) บน Vercel:
 
-```mermaid
-flowchart LR
-    Vercel["Frontend (Vercel)<br/>Angular SPA CDN<br/>Cost: $0/month"]
-    Koyeb["Backend (Koyeb / Cloud Run)<br/>.NET 10 Container<br/>Cost: $0/month"]
-    Supabase["Database (Supabase / Neon)<br/>PostgreSQL 500MB<br/>Cost: $0/month"]
+| พอร์ทัลการใช้งาน | เส้นทาง URL | วัตถุประสงค์หลัก | ลิงก์เข้าใช้งาน |
+|---|---|---|---|
+| **จุดกดรับบัตรคิวลูกค้า** | `/queue/join` | สแกนเลือกประเภทบริการและรับบัตรคิวดิจิทัล | [เปิดหน้าจอลูกค้า](https://queueflow-wheat.vercel.app/queue/join) |
+| **เคาน์เตอร์บริการพนักงาน** | `/staff/dashboard` | เรียกคิวถัดไป, ขานซ้ำ, เริ่มบริการ, ข้ามคิว, ยกเลิกคิว | [เปิดหน้าจอพนักงาน](https://queueflow-wheat.vercel.app/staff/dashboard) |
+| **จอแสดงผลดิจิทัลทีวี** | `/display` | จอแสดงผลแบบ 16:9 พร้อมเสียงระฆังและเสียงพูดขานคิว | [เปิดหน้าจอทีวี](https://queueflow-wheat.vercel.app/display) |
+| **ระบบจัดการสาขาและเคาน์เตอร์** | `/admin/management` | จัดการประเภทบริการ ผูกเคาน์เตอร์ และพิมพ์ป้าย QR Code | [เปิดหน้าจอแอดมิน](https://queueflow-wheat.vercel.app/admin/management) |
 
-    Vercel <-->|REST & WebSocket| Koyeb
-    Koyeb <-->|SELECT FOR UPDATE| Supabase
+> [!TIP]
+> **วิธีทดสอบระบบเรียลไทม์ข้ามหน้าต่าง**: ให้คุณเปิดหน้าจอ [เคาน์เตอร์บริการพนักงาน](https://queueflow-wheat.vercel.app/staff/dashboard) ในหน้าต่างหนึ่ง และเปิดหน้าจอ [จอแสดงผลทีวี](https://queueflow-wheat.vercel.app/display) อีกหน้าต่างหนึ่ง เมื่อกดปุ่ม **"เรียกคิวถัดไป"** จอแสดงผลทีวีจะส่งเสียงกระดิ่ง Chime และขานหมายเลขคิวเป็นภาษาไทยแบบเรียลไทม์ทันที!
+
+---
+
+### 3. คุณสมบัติเด่นของระบบ
+
+* **การคำนวณเวลารออัจฉริยะ (EWT)**: ประเมินเวลารอคอยเฉลี่ยแบบไดนามิกโดยคำนวณจากระยะเวลาให้บริการจริงและจำนวนเคาน์เตอร์ที่เปิดอยู่
+* **ระบบจัดการความสำคัญ (Priority Handling)**: ยกระดับความสำคัญของคิวพิเศษ (ผู้สูงอายุ, เคสฉุกเฉิน) ให้อยู่ลำดับต้นแบบอัตโนมัติ
+* **เสียงขานสังเคราะห์ 2 ภาษา**: ใช้ Web Audio API สร้างเสียงระฆังนุ่มนวล และ Web Speech API สังเคราะห์เสียงขานหมายเลขคิวภาษาไทยและอังกฤษ
+* **เครื่องมือสร้างป้าย QR Code ตั้งโต๊ะ**: สร้างป้ายตั้งเคาน์เตอร์และป้ายทางเข้าพร้อมพิมพ์ขนาด A4 พับสามเหลี่ยมได้จากหน้าแดชบอร์ด
+
+---
+
+### 4. สถาปัตยกรรมทางเทคนิค
+
+* **Frontend**: Angular 19+, TypeScript, Angular Signals, Tailwind CSS v4, Progressive Web App (PWA)
+* **Backend**: C# 14, **.NET 10 LTS (`net10.0`)**, ASP.NET Core Minimal APIs, Entity Framework Core 10, SignalR WebSocket
+* **Database**: PostgreSQL 18 (Production) / SQLite (Local Development)
+* **Caching**: Redis 7+ Pub/Sub Backplane
+
+---
+
+### 5. การติดตั้งและรันในเครื่อง (Local Setup)
+
+```powershell
+# 1. โคลนคลังโค้ด
+git clone https://github.com/ZillerDX/QueueFlow.git
+cd QueueFlow
+
+# 2. เริ่มต้นรัน Backend (.NET 10)
+cd backend/QueueFlow.Api
+dotnet run --urls "http://localhost:5080"
+
+# 3. เริ่มต้นรัน Frontend (Angular 19)
+cd ../../queueflow-web
+npm install
+npx ng serve --port 4200
 ```
 
-### Step 1: Database (Supabase PostgreSQL)
-1. Register for free at [supabase.com](https://supabase.com) and create a new project.
-2. Under **Project Settings > Database > Connection Pooling / URI**, copy the connection string:
-   ```
-   Host=db.xxx.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=YourPassword;SSL Mode=Require;Trust Server Certificate=true
-   ```
+เปิดเบราว์เซอร์ไปที่ [http://localhost:4200](http://localhost:4200) เพื่อเริ่มใช้งาน
 
-### Step 2: Backend Container (Koyeb or Google Cloud Run)
-1. Push this repository to GitHub.
-2. Connect your repo on [koyeb.com](https://www.koyeb.com) (or Google Cloud Run):
-   - **Deployment Type**: `Dockerfile`
-   - **Context Directory**: `backend`
-   - **Dockerfile Path**: `QueueFlow.Api/Dockerfile`
-   - **Port**: `8080` (Protocol: HTTP)
-   - **Environment Variables**:
-     - `ConnectionStrings__DefaultConnection` = `<Your Supabase Connection String>`
-     - `ASPNETCORE_ENVIRONMENT` = `Production`
-3. Deploy and note your public API URL (e.g. `https://queueflow-api.koyeb.app`).
+---
 
-### Step 3: Frontend SPA (Vercel)
-1. Import your GitHub repository on [vercel.com](https://vercel.com).
-2. Configure project settings:
-   - **Framework Preset**: Angular
-   - **Root Directory**: `queueflow-web`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist/queueflow-web/browser`
-3. Click **Deploy**. Your Angular web application is live!
-4. Pair your frontend to your backend:
-   - Simply open your Vercel URL once with `?apiUrl=https://your-backend.koyeb.app` (e.g., `https://my-queue.vercel.app/?apiUrl=https://queueflow-api.koyeb.app`).
-   - QueueFlow will automatically persist and route all calls and SignalR WebSockets to your live API container.
+### 6. ใบอนุญาต (License)
 
+ซอฟต์แวร์นี้เผยแพร่ภายใต้ใบอนุญาต **MIT License** — สามารถนำไปพัฒนา ต่อยอด หรือใช้งานในเชิงพาณิชย์ได้อย่างเสรี
