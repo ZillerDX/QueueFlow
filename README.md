@@ -18,11 +18,26 @@
 
 <br />
 
-[![QueueFlow Customer Mobile Intake Preview](docs/preview.png)](https://queueflow-wheat.vercel.app)
-
 </div>
 
 ---
+
+## 🖼️ Visual Interface Showcase (ภาพรวมหน้าจอระบบ)
+
+| 📱 Customer Mobile Intake (จุดกดรับบัตรคิว) | 🎫 Real-time Digital Pass (บัตรคิวดิจิทัล) |
+|:---:|:---:|
+| [![Customer Intake](docs/preview.png)](https://queueflow-wheat.vercel.app/queue/join) | [![Digital Ticket](docs/ticket-tracker.png)](https://queueflow-wheat.vercel.app/queue/demo-token-a01) |
+| *เลือกประเภทบริการ & คำนวณเวลารอเรียลไทม์* | *ติดตามสถานะคิว, จำนวนคิวด้านหน้า & QR สำหรับเช็คอิน* |
+
+| 🖥️ Staff Desk Terminal (เคาน์เตอร์เจ้าหน้าที่) | 📺 TV Digital Signage (จอแสดงผล 16:9) |
+|:---:|:---:|
+| [![Staff Terminal](docs/staff-terminal.png)](https://queueflow-wheat.vercel.app/staff/dashboard) | [![TV Display](docs/tv-display.png)](https://queueflow-wheat.vercel.app/display) |
+| *เรียกคิวถัดไป, ขานซ้ำ, เริ่มบริการ, สถิติประจำวัน* | *จอแสดงผลหมายเลขคิว พร้อมเสียง Chime และขานชื่อภาษาไทย* |
+
+| ⚙️ Branch Management (จัดการสาขาและโต๊ะบริการ) | 🖨️ Printable QR Standee (ป้ายตั้งโต๊ะพิมพ์ได้) |
+|:---:|:---:|
+| [![Branch Management](docs/admin-management.png)](https://queueflow-wheat.vercel.app/admin/management) | [![QR Standee Modal](docs/qr-standee-modal.png)](https://queueflow-wheat.vercel.app/admin/management) |
+| *ตั้งค่าหมวดหมู่บริการ (Service Code), ผูกโต๊ะบริการ* | *สร้างป้ายตั้งเคาน์เตอร์และทางเข้า พิมพ์ขนาด A4 พับสามเหลี่ยมทันที* |
 
 <a name="english"></a>
 ## English Documentation
