@@ -132,3 +132,51 @@ Launch the full stack (PostgreSQL 18, Redis, ASP.NET Core 10, Angular):
 ```powershell
 docker compose up --build
 ```
+
+---
+
+## 7. Zero-Cost Production Cloud Deployment Guide
+
+QueueFlow is architectured to run in production completely within the free tiers of top-tier cloud providers:
+
+```mermaid
+flowchart LR
+    Vercel["Frontend (Vercel)<br/>Angular SPA CDN<br/>Cost: $0/month"]
+    Koyeb["Backend (Koyeb / Cloud Run)<br/>.NET 10 Container<br/>Cost: $0/month"]
+    Supabase["Database (Supabase / Neon)<br/>PostgreSQL 500MB<br/>Cost: $0/month"]
+
+    Vercel <-->|REST & WebSocket| Koyeb
+    Koyeb <-->|SELECT FOR UPDATE| Supabase
+```
+
+### Step 1: Database (Supabase PostgreSQL)
+1. Register for free at [supabase.com](https://supabase.com) and create a new project.
+2. Under **Project Settings > Database > Connection Pooling / URI**, copy the connection string:
+   ```
+   Host=db.xxx.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=YourPassword;SSL Mode=Require;Trust Server Certificate=true
+   ```
+
+### Step 2: Backend Container (Koyeb or Google Cloud Run)
+1. Push this repository to GitHub.
+2. Connect your repo on [koyeb.com](https://www.koyeb.com) (or Google Cloud Run):
+   - **Deployment Type**: `Dockerfile`
+   - **Context Directory**: `backend`
+   - **Dockerfile Path**: `QueueFlow.Api/Dockerfile`
+   - **Port**: `8080` (Protocol: HTTP)
+   - **Environment Variables**:
+     - `ConnectionStrings__DefaultConnection` = `<Your Supabase Connection String>`
+     - `ASPNETCORE_ENVIRONMENT` = `Production`
+3. Deploy and note your public API URL (e.g. `https://queueflow-api.koyeb.app`).
+
+### Step 3: Frontend SPA (Vercel)
+1. Import your GitHub repository on [vercel.com](https://vercel.com).
+2. Configure project settings:
+   - **Framework Preset**: Angular
+   - **Root Directory**: `queueflow-web`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist/queueflow-web/browser`
+3. Click **Deploy**. Your Angular web application is live!
+4. Pair your frontend to your backend:
+   - Simply open your Vercel URL once with `?apiUrl=https://your-backend.koyeb.app` (e.g., `https://my-queue.vercel.app/?apiUrl=https://queueflow-api.koyeb.app`).
+   - QueueFlow will automatically persist and route all calls and SignalR WebSockets to your live API container.
+
